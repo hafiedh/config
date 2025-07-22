@@ -61,13 +61,22 @@ return {
         },
       })
 
-      -- Custom keymaps using <leader>hc..
-      vim.keymap.set("n", "<leader>hco", "<Plug>(git-conflict-ours)", { desc = "Choose Ours" })
-      vim.keymap.set("n", "<leader>hct", "<Plug>(git-conflict-theirs)", { desc = "Choose Theirs" })
-      vim.keymap.set("n", "<leader>hcb", "<Plug>(git-conflict-both)", { desc = "Choose Both" })
-      vim.keymap.set("n", "<leader>hc0", "<Plug>(git-conflict-none)", { desc = "Choose None" })
-      vim.keymap.set("n", "<leader>hcn", "<Plug>(git-conflict-next-conflict)", { desc = "Next Conflict" })
-      vim.keymap.set("n", "<leader>hcp", "<Plug>(git-conflict-prev-conflict)", { desc = "Previous Conflict" })
+      -- Autocommand for conflict detection
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "GitConflictDetected",
+        callback = function()
+          vim.notify("Conflict detected in " .. vim.fn.expand("<afile>"))
+        end,
+      })
+
+      -- Custom keymaps using <leader>hc prefix
+      vim.keymap.set("n", "<leader>hco", "<cmd>GitConflictChooseOurs<cr>", { desc = "Choose Ours" })
+      vim.keymap.set("n", "<leader>hct", "<cmd>GitConflictChooseTheirs<cr>", { desc = "Choose Theirs" })
+      vim.keymap.set("n", "<leader>hcb", "<cmd>GitConflictChooseBoth<cr>", { desc = "Choose Both" })
+      vim.keymap.set("n", "<leader>hc0", "<cmd>GitConflictChooseNone<cr>", { desc = "Choose None" })
+      vim.keymap.set("n", "<leader>hcn", "<cmd>GitConflictNextConflict<cr>", { desc = "Next Conflict" })
+      vim.keymap.set("n", "<leader>hcp", "<cmd>GitConflictPrevConflict<cr>", { desc = "Previous Conflict" })
+      vim.keymap.set("n", "<leader>hcl", "<cmd>GitConflictListQf<cr>", { desc = "List Conflicts in Quickfix" })
     end,
   },
 }
