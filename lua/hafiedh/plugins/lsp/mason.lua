@@ -52,6 +52,7 @@ return {
         "gomodifytags",
         "gotests",
         "yamlfmt",
+        "jsonlint",
       },
     })
   end,

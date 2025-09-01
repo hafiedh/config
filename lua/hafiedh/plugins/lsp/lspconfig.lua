@@ -1,9 +1,9 @@
 return {
-  -- LSP CONFIG
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
+      "b0o/schemastore.nvim",
       "hrsh7th/cmp-nvim-lsp",
       { "antosha417/nvim-lsp-file-operations", config = true },
       { "folke/neodev.nvim", opts = {} },
@@ -12,8 +12,9 @@ return {
       local lspconfig = require("lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
       local capabilities = cmp_nvim_lsp.default_capabilities()
+      local schemastore = require("schemastore")
 
-      -- Keymaps for LSP
+      -- Keymap LSP
       local keymap = vim.keymap
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -35,11 +36,16 @@ return {
         end,
       })
 
-      -- Common on_attach
+      -- Global on_attach
       local on_attach = function(client, bufnr)
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-        if client.server_capabilities then
-          client.server_capabilities.documentFormattingProvider = true
+        if client.server_capabilities.documentFormattingProvider then
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.format({ async = false })
+            end,
+          })
         end
       end
 
@@ -80,15 +86,7 @@ return {
 
       lspconfig.gopls.setup({
         capabilities = capabilities,
-        on_attach = function(client, bufnr)
-          on_attach(client, bufnr)
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.format({ async = false })
-            end,
-          })
-        end,
+        on_attach = on_attach,
         cmd = { "gopls", "-remote=auto" },
         filetypes = { "go", "gomod", "gowork", "gotmpl" },
         root_dir = util.root_pattern("go.work", "go.mod", ".git"),
@@ -105,6 +103,7 @@ return {
 
       lspconfig.html.setup({ capabilities = capabilities, on_attach = on_attach })
       lspconfig.cssls.setup({ capabilities = capabilities, on_attach = on_attach })
+
       lspconfig.ts_ls.setup({
         capabilities = capabilities,
         on_attach = on_attach,
@@ -113,8 +112,22 @@ return {
         settings = { completions = { completeFunctionCalls = true } },
         init_options = { preferences = { importModuleSpecifierPreference = "non-relative", quotePreference = "single" } },
       })
+
       lspconfig.pyright.setup({ capabilities = capabilities, on_attach = on_attach })
       lspconfig.dockerls.setup({ capabilities = capabilities, on_attach = on_attach })
+
+      lspconfig.jsonls.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        cmd = { "vscode-json-language-server", "--stdio" },
+        filetypes = { "json", "jsonc" },
+        settings = {
+          json = {
+            schemas = schemastore.json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
     end,
   },
 }
