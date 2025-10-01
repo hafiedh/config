@@ -6,13 +6,13 @@ return {
       "b0o/schemastore.nvim",
       "hrsh7th/cmp-nvim-lsp",
       { "antosha417/nvim-lsp-file-operations", config = true },
-      { "folke/neodev.nvim", opts = {} },
+      { "folke/neodev.nvim",                   opts = {} },
     },
     config = function()
-      local lspconfig = require("lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
-      local capabilities = cmp_nvim_lsp.default_capabilities()
       local schemastore = require("schemastore")
+
+      local capabilities = cmp_nvim_lsp.default_capabilities()
 
       -- Keymap LSP
       local keymap = vim.keymap
@@ -20,19 +20,20 @@ return {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
         callback = function(ev)
           local opts = { buffer = ev.buf, silent = true }
-          opts.desc = "Show LSP references";        keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
-          opts.desc = "Go to declaration";          keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-          opts.desc = "Show LSP definitions";       keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
-          opts.desc = "Show LSP implementations";   keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
-          opts.desc = "Show LSP type definitions";  keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
+          opts.desc = "Show LSP references"; keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
+          opts.desc = "Go to declaration"; keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+          opts.desc = "Show LSP definitions"; keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+          opts.desc = "Show LSP implementations"; keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
+          opts.desc = "Show LSP type definitions"; keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
           opts.desc = "See available code actions"; keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-          opts.desc = "Smart rename";               keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-          opts.desc = "Show buffer diagnostics";    keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
-          opts.desc = "Show line diagnostics";      keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
-          opts.desc = "Go to previous diagnostic";  keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-          opts.desc = "Go to next diagnostic";      keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-          opts.desc = "Show documentation";         keymap.set("n", "K", vim.lsp.buf.hover, opts)
-          opts.desc = "Restart LSP";                keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
+          opts.desc = "Smart rename"; keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+          opts.desc = "Show buffer diagnostics"; keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>",
+            opts)
+          opts.desc = "Show line diagnostics"; keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+          opts.desc = "Go to previous diagnostic"; keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+          opts.desc = "Go to next diagnostic"; keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+          opts.desc = "Show documentation"; keymap.set("n", "K", vim.lsp.buf.hover, opts)
+          opts.desc = "Restart LSP"; keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
         end,
       })
 
@@ -49,8 +50,6 @@ return {
         end
       end
 
-      local util = require("lspconfig.util")
-
       -- Diagnostic symbols
       local signs = {
         [vim.diagnostic.severity.ERROR] = "X",
@@ -66,68 +65,85 @@ return {
         update_in_insert = false,
       })
 
-      -- LSP Servers
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          Lua = {
-            diagnostics = { globals = { "vim" } },
-            completion = { callSnippet = "Replace" },
-            workspace = {
-              library = {
-                [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                [vim.fn.stdpath("config") .. "/lua"] = true,
+      -- LSP Servers (all moved to vim.lsp.config)
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = { globals = { "vim" } },
+              completion = { callSnippet = "Replace" },
+              workspace = {
+                library = {
+                  [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+                  [vim.fn.stdpath("config") .. "/lua"] = true,
+                },
               },
             },
           },
         },
-      })
-
-      lspconfig.gopls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        cmd = { "gopls", "-remote=auto" },
-        filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-        settings = {
-          gopls = {
-            completeUnimported = true,
-            usePlaceholders = true,
-            analyses = { unusedparams = true, shadow = true },
-            staticcheck = true,
-            gofumpt = true,
+        gopls = {
+          cmd = { "gopls", "-remote=auto" },
+          filetypes = { "go", "gomod", "gowork", "gotmpl" },
+          root_dir = function(fname)
+            return vim.fs.dirname(
+              vim.fs.find({ "go.work", "go.mod", ".git" }, { upward = true, path = fname })[1]
+            )
+          end,
+          settings = {
+            gopls = {
+              completeUnimported = true,
+              usePlaceholders = true,
+              analyses = { unusedparams = true, shadow = true },
+              staticcheck = true,
+              gofumpt = true,
+            },
           },
         },
-      })
-
-      lspconfig.html.setup({ capabilities = capabilities, on_attach = on_attach })
-      lspconfig.cssls.setup({ capabilities = capabilities, on_attach = on_attach })
-
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-        settings = { completions = { completeFunctionCalls = true } },
-        init_options = { preferences = { importModuleSpecifierPreference = "non-relative", quotePreference = "single" } },
-      })
-
-      lspconfig.pyright.setup({ capabilities = capabilities, on_attach = on_attach })
-      lspconfig.dockerls.setup({ capabilities = capabilities, on_attach = on_attach })
-
-      lspconfig.jsonls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        cmd = { "vscode-json-language-server", "--stdio" },
-        filetypes = { "json", "jsonc" },
-        settings = {
-          json = {
-            schemas = schemastore.json.schemas(),
-            validate = { enable = true },
+        tsserver = {
+          root_dir = function(fname)
+            return vim.fs.dirname(
+              vim.fs.find({ "package.json", "tsconfig.json", "jsconfig.json", ".git" }, { upward = true, path = fname })
+              [1]
+            )
+          end,
+          filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+          settings = { completions = { completeFunctionCalls = true } },
+          init_options = {
+            preferences = {
+              importModuleSpecifierPreference = "non-relative",
+              quotePreference = "single",
+            },
           },
         },
-      })
+        jsonls = {
+          cmd = { "vscode-json-language-server", "--stdio" },
+          filetypes = { "json", "jsonc" },
+          settings = {
+            json = {
+              schemas = schemastore.json.schemas(),
+              validate = { enable = true },
+            },
+          },
+        },
+        pyright = {},
+        dockerls = {},
+        html = {},
+        cssls = {},
+      }
+
+      -- Apply defaults and register autostart
+      for name, config in pairs(servers) do
+        config.capabilities = capabilities
+        config.on_attach = on_attach
+        vim.lsp.config[name] = config
+
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = config.filetypes or name,
+          callback = function(args)
+            vim.lsp.start(vim.lsp.config[name], { bufnr = args.buf })
+          end,
+        })
+      end
     end,
   },
 }
