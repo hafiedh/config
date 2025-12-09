@@ -100,6 +100,7 @@ return {
           },
         },
         tsserver = {
+          cmd = { "typescript-language-server", "--stdio" },
           root_dir = function(fname)
             return vim.fs.dirname(
               vim.fs.find({ "package.json", "tsconfig.json", "jsconfig.json", ".git" }, { upward = true, path = fname })
