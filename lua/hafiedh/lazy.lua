@@ -10,7 +10,6 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
-
 require("lazy").setup({ { import = "hafiedh.plugins" }, { import = "hafiedh.plugins.lsp" } }, {
   checker = {
     enabled = true,

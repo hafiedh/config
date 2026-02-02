@@ -2,6 +2,9 @@ return {
   {
     "github/copilot.vim",
     config = function()
+      -- Set node path with experimental SQLite flag
+      vim.g.copilot_node_command = "/Users/hafiedh/.nvm/versions/node/v20.20.0/bin/node"
+      
       -- Copilot insert mode keymaps
       vim.g.copilot_no_tab_map = true
       vim.api.nvim_set_keymap("i", "<C-.>", 'copilot#Accept("<CR>")', { expr = true, silent = true, noremap = true })
@@ -28,9 +31,7 @@ return {
     },
     build = "make tiktoken",
     opts = {
-      model = {
-        default = "gpt-4.1"
-      },
+      model = 'gpt-4.1', 
     },
     keys = {
       { "<leader>ce", ":CopilotChatExplain<CR>",  mode = "v", desc = "Copilot Chat Explain" },
