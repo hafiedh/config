@@ -43,3 +43,6 @@ keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase windo
 keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down" }) -- move selected lines down
 keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up" }) -- move selected lines up
 
+keymap.set("n", "<leader>jf", ":%!jsonfix<CR>")
+keymap.set("n", "<leader>jq", ":%!jq<CR>")
+keymap.set("n", "<leader>jj", ":%!jsonfix | jq<CR>")

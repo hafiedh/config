@@ -1,37 +1,34 @@
 return {
   {
-    "github/copilot.vim",
+    "zbirenbaum/copilot.lua",
+    event = "InsertEnter",
     config = function()
-      -- Set node path with experimental SQLite flag
-      vim.g.copilot_node_command = "/Users/hafiedh/.nvm/versions/node/v20.20.0/bin/node"
-      
-      -- Copilot insert mode keymaps
-      vim.g.copilot_no_tab_map = true
-      vim.api.nvim_set_keymap("i", "<C-.>", 'copilot#Accept("<CR>")', { expr = true, silent = true, noremap = true })
-      vim.api.nvim_set_keymap("i", "<C-,>", 'copilot#Next()', { expr = true, silent = true, noremap = true })
-      vim.api.nvim_set_keymap("i", "<C-/>", 'copilot#Previous()', { expr = true, silent = true, noremap = true })
-      local keymap = vim.keymap
-      -- CopilotChat normal mode keymaps
-      keymap.set("n", "<leader>cc", "<cmd>CopilotChat<CR>", { desc = "Copilot Chat" })
-      keymap.set("n", "<leader>ce", "<cmd>CopilotChatExplain<CR>", { desc = "Copilot Chat Explain" })
-      keymap.set("n", "<leader>co", "<cmd>CopilotChatOptimize<CR>", { desc = "Copilot Chat Optimized" })
-      keymap.set("n", "<leader>cf", "<cmd>CopilotChatFix<CR>", { desc = "Copilot Chat Fix" })
-      keymap.set("n", "<leader>cd", "<cmd>CopilotChatDebug<CR>", { desc = "Copilot Chat Debug" })
-      keymap.set("n", "<leader>ct", "<cmd>CopilotChatTest<CR>", { desc = "Copilot Chat Test" })
-      keymap.set("n", "<leader>cm", "<cmd>CopilotChatModels<CR>", { desc = "Copilot Chat Models" })
-      keymap.set("n", "<leader>cC", "<cmd>CopilotChatClear<CR>", { desc = "Copilot Chat Clear" })
-      keymap.set("n", "<leader>cR", "<cmd>CopilotChatReset<CR>", { desc = "Copilot Chat Reset" })
+      require("copilot").setup({
+        suggestion = { enabled = false }, -- disable ghost text (we use cmp)
+        panel = { enabled = false },
+        keymaps = {
+          suggestion = {
+            accept = "<C-l>",
+            accept_word = false,
+            accept_line = false,
+            next = "<C-]>",
+            prev = "<C-[>",
+            dismiss = "<C-/>",
+          },
+        },
+      })
     end,
   },
+
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      { "github/copilot.vim" },
-      { "nvim-lua/plenary.nvim", branch = "master" },
+      { "zbirenbaum/copilot.lua" },
+      { "nvim-lua/plenary.nvim" },
     },
     build = "make tiktoken",
     opts = {
-      model = 'gpt-4.1', 
+      model = "gpt-4o",
     },
     keys = {
       { "<leader>ce", ":CopilotChatExplain<CR>",  mode = "v", desc = "Copilot Chat Explain" },
