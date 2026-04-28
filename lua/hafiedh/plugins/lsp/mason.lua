@@ -5,13 +5,13 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
   },
   config = function()
-    -- import mason
     local mason = require("mason")
-    -- import mason-lspconfig
     local mason_lspconfig = require("mason-lspconfig")
     local mason_tool_installer = require("mason-tool-installer")
-    
-    -- enable mason and configure icons
+
+    ----------------------------------------------------------------------
+    -- Mason UI
+    ----------------------------------------------------------------------
     mason.setup({
       ui = {
         icons = {
@@ -21,10 +21,12 @@ return {
         },
       },
     })
-    
+
+    ----------------------------------------------------------------------
+    -- LSP Servers
+    ----------------------------------------------------------------------
     mason_lspconfig.setup({
       automatic_enable = false,
-      -- list of servers for mason to install
       ensure_installed = {
         "html",
         "cssls",
@@ -35,22 +37,31 @@ return {
         "ts_ls",
         "jsonls",
         "yamlls",
-      }
+      },
     })
-    
+
+    ----------------------------------------------------------------------
+    -- Tools (formatters, linters, etc)
+    ----------------------------------------------------------------------
     mason_tool_installer.setup({
       ensure_installed = {
-        { 'golangci-lint', version = 'v2.0.2' },
-        { 'gopls', condition = function() return not os.execute("go version") end },
-        "prettier", -- prettier formatter
-        "stylua", -- lua formatter
-        "isort", -- python formatter
-        "black", -- python formatter
+        { "golangci-lint", version = "v2.0.2" },
+
+        -- formatters / linters
+        "prettier",
+        "stylua",
+        "isort",
+        "black",
         "pylint",
+
+        -- go tools
+        "gci", -- ✅ import formatter
         "gofumpt",
         "golines",
         "gomodifytags",
         "gotests",
+
+        -- misc
         "yamlfmt",
         "jsonlint",
       },
