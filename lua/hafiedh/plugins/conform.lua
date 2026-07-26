@@ -12,28 +12,28 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
 
-        -- JS / TS ecosystem
-        javascript = { { "prettierd", "prettier", stop_after_first = true } },
-        typescript = { { "prettierd", "prettier", stop_after_first = true } },
-        javascriptreact = { { "prettierd", "prettier", stop_after_first = true } },
-        typescriptreact = { { "prettierd", "prettier", stop_after_first = true } },
-        json = { { "prettierd", "prettier", stop_after_first = true } },
-        css = { { "prettierd", "prettier", stop_after_first = true } },
-        scss = { { "prettierd", "prettier", stop_after_first = true } },
-        html = { { "prettierd", "prettier", stop_after_first = true } },
-        markdown = { { "prettierd", "prettier", stop_after_first = true } },
+        -- JS / TS ecosystem (✅ FIXED)
+        javascript = { "prettierd", "prettier", stop_after_first = true },
+        typescript = { "prettierd", "prettier", stop_after_first = true },
+        javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+        typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+        json = { "prettierd", "prettier", stop_after_first = true },
+        css = { "prettierd", "prettier", stop_after_first = true },
+        scss = { "prettierd", "prettier", stop_after_first = true },
+        html = { "prettierd", "prettier", stop_after_first = true },
+        markdown = { "prettierd", "prettier", stop_after_first = true },
 
-        -- Go (🔥 proper setup)
+        -- Go
         go = { "gci", "gofumpt", "golines" },
 
-        -- Others (keep only useful ones)
+        -- Others
         yaml = { "yamlfix" },
         toml = { "taplo" },
         rust = { "rustfmt" },
       },
 
       ----------------------------------------------------------------------
-      -- Dynamic gci config (auto detect go.mod)
+      -- Dynamic gci config
       ----------------------------------------------------------------------
       formatters = {
         gci = {
@@ -70,18 +70,16 @@ return {
     })
 
     ----------------------------------------------------------------------
-    -- Auto format (Go only: includes import fix)
+    -- Auto format (Go only)
     ----------------------------------------------------------------------
     vim.api.nvim_create_autocmd("BufWritePre", {
       pattern = "*.go",
       callback = function()
-        -- fix imports via gopls
         vim.lsp.buf.code_action({
           context = { only = { "source.organizeImports" } },
           apply = true,
         })
 
-        -- format via conform
         conform.format({ async = false })
       end,
     })

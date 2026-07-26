@@ -1,0 +1,137 @@
+return {
+  {
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    version = false,
+    build = "make",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "nvim-treesitter/nvim-treesitter",
+      "MeanderingProgrammer/render-markdown.nvim",
+    },
+    opts = {
+      provider = "copilot_ask",
+      providers = {
+        budget = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "budget",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 4096,
+            temperature = 0.7,
+            max_input_tokens = 128000,
+          },
+        },
+        execution = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "execution",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 8192,
+            temperature = 0.7,
+            max_input_tokens = 128000,
+          },
+        },
+        planning = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "planning",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 16000,
+            temperature = 0.7,
+            max_input_tokens = 1024000,
+          },
+        },
+        copilot_ask = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "copilot-ask",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 4096,
+            temperature = 0.7,
+            max_input_tokens = 128000,
+          },
+        },
+        copilot_plan = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "copilot-plan",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 8192,
+            temperature = 0.7,
+            max_input_tokens = 1000000,
+          },
+        },
+        copilot_explore = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "copilot-explore",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 4096,
+            temperature = 0.7,
+            max_input_tokens = 128000,
+          },
+        },
+        copilot_utility = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "copilot-utility",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 4096,
+            temperature = 0.7,
+            max_input_tokens = 128000,
+          },
+        },
+        mini_max = {
+          __inherited_from = "openai",
+          endpoint = "https://ai-router.payaja.id/v1",
+          api_key_name = "API_KEY_AI",
+          model = "minimax",
+          stream = true,
+          extra_request_body = {
+            max_tokens = 4096,
+            temperature = 0.7,
+            max_input_tokens = 1000000,
+          },
+        },
+      },
+      -- faster response feel
+      behaviour = {
+        auto_set_keymaps = true,
+        auto_apply_diff_after_generation = false, -- manually apply with "ca"
+        support_paste_from_clipboard = true,
+      },
+    },
+    keys = {
+      { "<leader>aa", "<cmd>AvanteAsk<CR>",  mode = { "n", "v" }, desc = "AI Ask" },
+      { "<leader>ac", "<cmd>AvanteChat<CR>",                       desc = "AI Chat" },
+      { "<leader>ae", "<cmd>AvanteEdit<CR>", mode = "v",           desc = "AI Edit" },
+      { "<leader>at", "<cmd>AvanteToggle<CR>",                     desc = "AI Toggle" },
+      { "<leader>an", "<cmd>AvanteNew<CR>",                        desc = "AI New Chat" },
+      { "<leader>a1", function() require("avante.api").switch_provider("budget") end,         desc = "AI → budget" },
+      { "<leader>a2", function() require("avante.api").switch_provider("copilot_ask") end,  desc = "AI → copilot_ask" },
+      { "<leader>a3", function() require("avante.api").switch_provider("copilot_plan") end,   desc = "AI → copilot_plan" },
+      { "<leader>a4", function() require("avante.api").switch_provider("copilot_explore") end, desc = "AI → copilot_explore" },
+      { "<leader>a5", function() require("avante.api").switch_provider("copilot_utility") end, desc = "AI → copilot_utility" },
+      { "<leader>a6", function() require("avante.api").switch_provider("execution") end,      desc = "AI → execution" },
+      { "<leader>a7", function() require("avante.api").switch_provider("planning") end,       desc = "AI → planning" },
+      { "<leader>a8", function() require("avante.api").switch_provider("mini_max") end,       desc = "AI → minimax" },
+    },
+  },
+}

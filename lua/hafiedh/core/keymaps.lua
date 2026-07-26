@@ -46,4 +46,13 @@ keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up" }) --
 
 
 vim.keymap.set("n", "<leader>jj", ":%!sh -c 'jsonrepair | jq .'<CR>")
-
+vim.keymap.set("n", "<leader>u", function()
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "undotree" then
+      vim.api.nvim_win_close(win, true)
+      return
+    end
+  end
+  vim.cmd.Undotree()
+end, { desc = "Toggle UndoTree" })
