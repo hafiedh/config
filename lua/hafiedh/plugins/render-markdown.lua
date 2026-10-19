@@ -11,4 +11,12 @@ return {
     code = { style = "full" },
     checkbox = { enabled = true },
   },
+  keys = {
+    {
+      "<leader>mp",
+      "<cmd>RenderMarkdown buf_toggle<cr>",
+      ft = "markdown",
+      desc = "Toggle Markdown Preview (raw/rendered)",
+    },
+  },
 }
