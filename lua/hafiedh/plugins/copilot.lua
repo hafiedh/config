@@ -5,7 +5,16 @@ return {
 
     opts = {
       suggestion = {
-        enabled = false, -- Using blink.cmp / nvim-cmp
+        enabled = true,
+        auto_trigger = true, -- show ghost text while typing (VSCode-like)
+        keymap = {
+          accept = "<Tab>",
+          accept_word = "<M-w>",
+          accept_line = "<M-l>",
+          next = "<M-]>",
+          prev = "<M-[>",
+          dismiss = "<C-]>",
+        },
       },
 
       panel = {

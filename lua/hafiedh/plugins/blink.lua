@@ -3,14 +3,6 @@ return {
     "saghen/blink.cmp",
     dependencies = {
       "rafamadriz/friendly-snippets",
-      {
-        "fang2hou/blink-copilot",
-        dependencies = { "zbirenbaum/copilot.lua" },
-        opts = {
-          max_completions = 3,
-          max_attempts = 4,
-        },
-      },
     },
     version = "*",
     opts = {
@@ -25,19 +17,19 @@ return {
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
       },
       appearance = {
-        use_nvim_cmp_as_default = true,
         nerd_font_variant = "mono",
       },
-      sources = {
-        default = { "lsp", "path", "snippets", "buffer", "copilot" },
-        providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-copilot",
-            score_offset = 100,
-            async = true,
-          },
+      completion = {
+        menu = { auto_show = false }, -- no popup; Copilot ghost text is used instead
+        trigger = {
+          show_on_keyword = false,
+          show_on_trigger_character = false,
         },
+        documentation = { auto_show = true, auto_show_delay_ms = 200 },
+        ghost_text = { enabled = false }, -- Copilot provides ghost text
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
       },
     },
     opts_extend = { "sources.default" },
