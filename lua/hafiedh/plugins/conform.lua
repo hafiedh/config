@@ -70,17 +70,30 @@ return {
     })
 
     ----------------------------------------------------------------------
-    -- Auto format (Go only)
+    -- Auto organize/add imports on save (Go + TS/JS)
     ----------------------------------------------------------------------
     vim.api.nvim_create_autocmd("BufWritePre", {
-      pattern = "*.go",
-      callback = function()
-        vim.lsp.buf.code_action({
-          context = { only = { "source.organizeImports" } },
-          apply = true,
-        })
+      pattern = { "*.go", "*.ts", "*.tsx", "*.js", "*.jsx", "*.mts", "*.cts", "*.mjs", "*.cjs" },
+      callback = function(args)
+        local ft = vim.bo[args.buf].filetype
 
-        conform.format({ async = false })
+        if ft == "go" then
+          vim.lsp.buf.code_action({
+            context = { only = { "source.organizeImports" } },
+            apply = true,
+          })
+          conform.format({ async = false, bufnr = args.buf })
+        else
+          -- ts_ls: add missing imports, then sort/prune them
+          vim.lsp.buf.code_action({
+            context = { only = { "source.addMissingImports.ts" } },
+            apply = true,
+          })
+          vim.lsp.buf.code_action({
+            context = { only = { "source.organizeImports.ts" } },
+            apply = true,
+          })
+        end
       end,
     })
 

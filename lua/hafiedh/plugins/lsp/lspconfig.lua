@@ -176,6 +176,22 @@ return {
       vim.lsp.config("dockerls", { capabilities = capabilities, on_attach = on_attach })
       vim.lsp.config("html", { capabilities = capabilities, on_attach = on_attach })
       vim.lsp.config("cssls", { capabilities = capabilities, on_attach = on_attach })
+      vim.lsp.config("taplo", { capabilities = capabilities, on_attach = on_attach })
+
+      vim.lsp.config("rust_analyzer", {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = { allFeatures = true },
+            checkOnSave = { command = "clippy" },
+            imports = {
+              granularity = { group = "module" },
+              prefix = "self",
+            },
+          },
+        },
+      })
 
       ----------------------------------------------------------------------
       -- ENABLE
@@ -190,6 +206,8 @@ return {
         "dockerls",
         "html",
         "cssls",
+        "rust_analyzer",
+        "taplo",
       })
     end,
   },

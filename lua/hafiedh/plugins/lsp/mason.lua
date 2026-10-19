@@ -37,6 +37,8 @@ return {
         "ts_ls",
         "jsonls",
         "yamlls",
+        "rust_analyzer",
+        "taplo",
       },
     })
 
@@ -45,7 +47,7 @@ return {
     ----------------------------------------------------------------------
     mason_tool_installer.setup({
       ensure_installed = {
-        { "golangci-lint", version = "v2.0.2" },
+        { "golangci-lint", version = "v2.15.0" },
 
         -- formatters / linters
         "prettier",
@@ -63,6 +65,7 @@ return {
 
         -- misc
         "yamlfmt",
+        "yamlfix", -- used by conform for yaml/yml
         "jsonlint",
       },
     })
