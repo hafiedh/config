@@ -12,7 +12,8 @@ return {
         ["<M-\\>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-e>"] = { "hide", "fallback" },
         ["<CR>"] = { "accept", "fallback" },
-        -- Tab: accept Copilot ghost text if visible, else navigate popup, else normal Tab
+        -- Tab: accept Copilot ghost text if visible, else normal Tab.
+        -- Popup navigation is handled by arrow keys / <C-j>/<C-k>.
         ["<Tab>"] = {
           function(cmp)
             local ok, suggestion = pcall(require, "copilot.suggestion")
@@ -21,10 +22,8 @@ return {
               return true
             end
           end,
-          "select_next",
           "fallback",
         },
-        ["<S-Tab>"] = { "select_prev", "fallback" },
         ["<Down>"] = { "select_next", "fallback" },
         ["<Up>"] = { "select_prev", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
@@ -36,11 +35,10 @@ return {
         nerd_font_variant = "mono",
       },
       completion = {
-        menu = { auto_show = false }, -- no popup; Copilot ghost text is used instead
-        trigger = {
-          show_on_keyword = false,
-          show_on_trigger_character = false,
-        },
+        -- Insert mode: auto popup + Copilot ghost text side by side.
+        -- blink's own ghost text is disabled below so there's no doubled inline
+        -- ghost text (two inline ghost texts at the cursor render concatenated).
+        menu = { auto_show = true },
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 50,
