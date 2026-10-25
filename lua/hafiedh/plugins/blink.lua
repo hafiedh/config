@@ -8,19 +8,8 @@ return {
     opts = {
       keymap = {
         preset = "none",
-        -- Manual popup trigger: when you'd rather use LSP/buffer completion
-        -- instead of Copilot, dismiss the ghost text then open the popup.
-        ["<M-\\>"] = {
-          function()
-            pcall(function()
-              require("copilot.suggestion").dismiss()
-            end)
-            -- returns nil -> falls through to "show" below
-          end,
-          "show",
-          "show_documentation",
-          "hide_documentation",
-        },
+        -- Manual popup trigger in insert mode (Copilot ghost text stays visible).
+        ["<M-\\>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-e>"] = { "hide", "fallback" },
         ["<CR>"] = { "accept", "fallback" },
         -- Tab: accept Copilot ghost text if visible, else navigate popup, else normal Tab
@@ -36,6 +25,8 @@ return {
           "fallback",
         },
         ["<S-Tab>"] = { "select_prev", "fallback" },
+        ["<Down>"] = { "select_next", "fallback" },
+        ["<Up>"] = { "select_prev", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback" },
         ["<C-b>"] = { "scroll_documentation_up", "fallback" },
@@ -50,8 +41,12 @@ return {
           show_on_keyword = false,
           show_on_trigger_character = false,
         },
-        documentation = { auto_show = true, auto_show_delay_ms = 200 },
-        ghost_text = { enabled = false }, -- Copilot provides ghost text
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 50,
+          window = { border = "rounded" },
+        },
+        ghost_text = { enabled = false }, -- Copilot provides the only inline ghost text
       },
       -- popup in `:` cmdline (no Copilot there), inherits the keymap above
       cmdline = {
