@@ -8,7 +8,7 @@ return {
         enabled = true,
         auto_trigger = true, -- show ghost text while typing (VSCode-like)
         keymap = {
-          accept = "<Tab>",
+          accept = false, -- <Tab> is handled by blink.cmp (falls back to popup when no ghost text)
           accept_word = "<M-w>",
           accept_line = "<M-l>",
           next = "<M-]>",
