@@ -43,7 +43,7 @@ return {
 
       -- ============================================================
       -- Incremental selection
-      --   <C-Space> normal = start, visual = expand
+      --   <leader>v normal = start, visual = expand
       --   <BS>      visual = shrink
       -- ============================================================
 
@@ -133,9 +133,9 @@ return {
         end
       end
 
-      vim.keymap.set("n", "<C-Space>", start_selection,
+      vim.keymap.set("n", "<leader>v", start_selection,
         { desc = "Treesitter: Start Selection" })
-      vim.keymap.set("x", "<C-Space>", expand_selection,
+      vim.keymap.set("x", "<leader>v", expand_selection,
         { desc = "Treesitter: Expand Selection" })
       vim.keymap.set("x", "<BS>", shrink_selection,
         { desc = "Treesitter: Shrink Selection" })

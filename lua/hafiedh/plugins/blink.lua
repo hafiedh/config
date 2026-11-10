@@ -56,6 +56,15 @@ return {
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
+        providers = {
+          cmdline = {
+            min_keyword_length = function(ctx)
+              -- Avoid showing command completions for short command abbreviations like `:w`.
+              if ctx.mode == "cmdline" and not ctx.line:find(" ") then return 4 end
+              return 0
+            end,
+          },
+        },
       },
     },
     opts_extend = { "sources.default" },

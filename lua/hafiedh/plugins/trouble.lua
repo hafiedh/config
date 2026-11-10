@@ -6,6 +6,7 @@ return {
   },
   cmd = "Trouble",
   keys = {
+    { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<CR>", desc = "Toggle LSP symbols tree" },
     { "<leader>xw", "<cmd>Trouble diagnostics toggle<CR>", desc = "Open trouble workspace diagnostics" },
     { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Open trouble document diagnostics" },
     { "<leader>xq", "<cmd>Trouble quickfix toggle<CR>", desc = "Open trouble quickfix list" },
